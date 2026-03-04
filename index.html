@@ -178,15 +178,23 @@ nav.sticky{padding:18px 60px;background:rgba(8,8,8,0.95);backdrop-filter:blur(20
 }
 .about-img-wrap::before{
   content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(201,168,76,0.08) 0%,transparent 60%);
+  background:linear-gradient(135deg,rgba(201,168,76,0.06) 0%,transparent 60%);
 }
-.about-monogram{
-  font-family:'Cormorant Garamond',serif;
-  font-size:160px;font-weight:300;
-  color:rgba(201,168,76,0.08);
-  line-height:1;letter-spacing:-8px;
-  user-select:none;
+.about-cards-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:32px;width:100%;z-index:1;
 }
+.ac{
+  background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.12);
+  border-radius:8px;padding:20px 16px;
+  display:flex;flex-direction:column;gap:8px;
+  transition:border-color .3s,transform .3s;
+}
+.ac:hover{border-color:rgba(201,168,76,0.35);transform:translateY(-3px);}
+.ac-icon{font-size:22px;}
+.ac-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);}
+.ac-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--white);line-height:1;}
+.ac-val span{color:var(--gold);}
+.about-monogram{display:none;}
 .about-badge{
   position:absolute;bottom:-20px;right:-20px;
   width:120px;height:120px;
@@ -520,6 +528,25 @@ footer{
   .svc{grid-template-columns:40px 1fr;gap:16px;}
   .svc-tags,.svc-icon{display:none;}
 }
+
+.contact-btns{display:flex;flex-direction:column;gap:12px;max-width:560px;margin:0 auto;}
+.contact-btn-main,.contact-btn-sec{
+  display:flex;align-items:center;gap:20px;
+  padding:22px 28px;border-radius:2px;text-decoration:none;
+  transition:transform .2s,border-color .2s;cursor:none;
+}
+.contact-btn-main{background:var(--gold);border:1px solid var(--gold);}
+.contact-btn-main:hover{background:var(--gold2);transform:translateY(-2px);}
+.contact-btn-main .cb-label{font-size:15px;font-weight:700;color:var(--bg);}
+.contact-btn-main .cb-sub{font-size:12px;color:rgba(8,8,8,0.6);margin-top:2px;}
+.contact-btn-main .cb-arr{color:var(--bg);font-size:20px;margin-left:auto;}
+.contact-btn-main .cb-icon{font-size:22px;}
+.contact-btn-sec{background:var(--bg3);border:1px solid var(--border2);}
+.contact-btn-sec:hover{border-color:var(--border);transform:translateY(-2px);}
+.contact-btn-sec .cb-label{font-size:15px;font-weight:600;color:var(--white);}
+.contact-btn-sec .cb-sub{font-size:12px;color:var(--gray);margin-top:2px;}
+.contact-btn-sec .cb-arr{color:var(--gold);font-size:20px;margin-left:auto;}
+.contact-btn-sec .cb-icon{font-size:22px;}
 </style>
 </head>
 <body>
@@ -562,7 +589,7 @@ footer{
   </h1>
   <div class="hero-bottom">
     <p class="hero-desc">
-      <strong>Paurav Joshi</strong> — AI-powered digital agency helping restaurants, salons &amp; local businesses get online fast, look premium, and convert visitors into customers.
+      <strong>Paurav Joshi</strong> — digital agency helping restaurants, salons &amp; local businesses get online fast, look premium, and convert visitors into customers.
     </p>
     <div class="hero-ctas">
       <a href="#work" class="btn-gold">View My Work →</a>
@@ -583,14 +610,14 @@ footer{
     <div class="marquee-item"><span>✦</span> Brand Identity</div>
     <div class="marquee-item"><span>✦</span> Restaurant Apps</div>
     <div class="marquee-item"><span>✦</span> Booking Systems</div>
-    <div class="marquee-item"><span>✦</span> AI-Powered Build</div>
+    <div class="marquee-item"><span>✦</span> Fast Delivery</div>
     <div class="marquee-item"><span>✦</span> 48hr Delivery</div>
     <div class="marquee-item"><span>✦</span> Website Design</div>
     <div class="marquee-item"><span>✦</span> Web Applications</div>
     <div class="marquee-item"><span>✦</span> Brand Identity</div>
     <div class="marquee-item"><span>✦</span> Restaurant Apps</div>
     <div class="marquee-item"><span>✦</span> Booking Systems</div>
-    <div class="marquee-item"><span>✦</span> AI-Powered Build</div>
+    <div class="marquee-item"><span>✦</span> Fast Delivery</div>
     <div class="marquee-item"><span>✦</span> 48hr Delivery</div>
   </div>
 </div>
@@ -601,7 +628,7 @@ footer{
     <p class="section-label">About Me</p>
     <h2>Building the <em>digital future</em> of local business</h2>
     <p>I'm Paurav Joshi, founder of Lancy Digital. I help restaurants, salons, gyms, and shops get professional websites and apps — without the big agency price tag or the long wait.</p>
-    <p>Using the latest AI tools, I deliver stunning, fully custom digital experiences in 48–72 hours. Every project is built from scratch — no templates, no shortcuts.</p>
+    <p>I deliver stunning, fully custom digital experiences in 48–72 hours. Every project is built from scratch — no templates, no shortcuts — just expert craftsmanship and fast delivery.</p>
     <div class="about-nums">
       <div class="about-num"><div class="n">40<span>+</span></div><div class="l">Projects Delivered</div></div>
       <div class="about-num"><div class="n">5<span>★</span></div><div class="l">Client Rating</div></div>
@@ -611,10 +638,15 @@ footer{
   </div>
   <div class="about-right reveal reveal-delay-2">
     <div class="about-img-wrap">
-      <div class="about-monogram">PJ</div>
+      <div class="about-cards-grid">
+        <div class="ac"><div class="ac-icon">🌐</div><div class="ac-label">Websites</div><div class="ac-val">30<span>+</span></div></div>
+        <div class="ac"><div class="ac-icon">📱</div><div class="ac-label">Web Apps</div><div class="ac-val">8<span>+</span></div></div>
+        <div class="ac"><div class="ac-icon">✦</div><div class="ac-label">Brands</div><div class="ac-val">12<span>+</span></div></div>
+        <div class="ac"><div class="ac-icon">⚡</div><div class="ac-label">Delivery</div><div class="ac-val">48<span>h</span></div></div>
+      </div>
       <div class="about-badge">
-        <div class="b1">AI</div>
-        <div class="b2">Powered<br>Agency</div>
+        <div class="b1">5★</div>
+        <div class="b2">Rated<br>Agency</div>
       </div>
     </div>
     <div class="about-skills">
@@ -800,7 +832,7 @@ footer{
 <section class="tools" id="tools">
   <div class="reveal">
     <p class="section-label">My Toolstack</p>
-    <h2 class="sec-title">Built with the <em>best AI tools</em></h2>
+    <h2 class="sec-title">My <em>toolstack</em></h2>
   </div>
   <div class="tools-grid reveal">
     <div class="tool-card">
@@ -878,8 +910,8 @@ footer{
       <div class="p-card">
         <div class="p-head">
           <div class="p-name">Starter</div>
-          <div class="p-price"><sup>$</sup>49</div>
-          <div class="p-sub">One-time · 2 day delivery</div>
+          <div class="p-price"><sup>$</sup>15</div>
+          <div class="p-sub">One-time · 1 day delivery</div>
         </div>
         <div class="p-body">
           <div class="p-feature"><span class="pf-dot">✦</span> Single page website</div>
@@ -894,8 +926,8 @@ footer{
         <div class="p-hot-bar">Most Popular</div>
         <div class="p-head">
           <div class="p-name">Business</div>
-          <div class="p-price"><sup>$</sup>149</div>
-          <div class="p-sub">One-time · 4 day delivery</div>
+          <div class="p-price"><sup>$</sup>45</div>
+          <div class="p-sub">One-time · 3 day delivery</div>
         </div>
         <div class="p-body">
           <div class="p-feature"><span class="pf-dot">✦</span> Up to 5 pages</div>
@@ -910,8 +942,8 @@ footer{
       <div class="p-card">
         <div class="p-head">
           <div class="p-name">App + Brand</div>
-          <div class="p-price"><sup>$</sup>299</div>
-          <div class="p-sub">One-time · 7 day delivery</div>
+          <div class="p-price"><sup>$</sup>99</div>
+          <div class="p-sub">One-time · 5 day delivery</div>
         </div>
         <div class="p-body">
           <div class="p-feature"><span class="pf-dot">✦</span> Full web app</div>
@@ -931,15 +963,24 @@ footer{
   <div class="contact-inner reveal">
     <p class="section-label">Get In Touch</p>
     <h2 class="contact-title">Let's build something <em>remarkable.</em></h2>
-    <p class="contact-sub">Tell me about your business and what you need. I'll get back to you within a few hours.</p>
-    <div class="contact-form">
-      <input class="c-input" type="text" placeholder="Your Name">
-      <input class="c-input" type="email" placeholder="Your Email">
-      <input class="c-input full" type="text" placeholder="Business Name & Type">
-      <textarea class="c-textarea" placeholder="Tell me about your project — what do you need?"></textarea>
-      <button class="c-submit">Send Message →</button>
+        <p class="contact-sub">Ready to get started? Reach out directly — I reply within a few hours and we can get your project moving fast.</p>
+    <div class="contact-btns">
+      <a href="https://www.fiverr.com/youwinworld" target="_blank" class="contact-btn-main">
+        <span class="cb-icon">💼</span>
+        <div><div class="cb-label">Order on Fiverr</div><div class="cb-sub">@youwinworld — Fast &amp; Secure</div></div>
+        <span class="cb-arr">→</span>
+      </a>
+      <a href="mailto:paurav@lancydigital.com" class="contact-btn-sec">
+        <span class="cb-icon">✉️</span>
+        <div><div class="cb-label">Send an Email</div><div class="cb-sub">paurav@lancydigital.com</div></div>
+        <span class="cb-arr">→</span>
+      </a>
+      <a href="https://wa.me/447469293717" target="_blank" class="contact-btn-sec">
+        <span class="cb-icon">💬</span>
+        <div><div class="cb-label">WhatsApp Me</div><div class="cb-sub">Quick chat, fast quotes</div></div>
+        <span class="cb-arr">→</span>
+      </a>
     </div>
-    <p class="contact-alt">Or find me on Fiverr: <a href="#">@youwinworld</a></p>
   </div>
 </section>
 
