@@ -4,1076 +4,425 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Paurav Joshi — Lancy Digital</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Unbounded:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#080808;
-  --bg2:#0f0f0f;
-  --bg3:#161616;
-  --gold:#c9a84c;
-  --gold2:#e8c97a;
-  --gold-dim:rgba(201,168,76,0.12);
-  --white:#f5f5f0;
-  --gray:#888880;
-  --border:rgba(201,168,76,0.15);
-  --border2:rgba(255,255,255,0.06);
+  --bg:#f0ede6;--dark:#0a0a08;--ink:#1a1916;--cream:#faf8f3;
+  --orange:#e85d2f;--orange2:#f27348;--lime:#c8e63c;--blue:#2563eb;
+  --gray:#6b6860;--border:#dedad2;
 }
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none;}
-
-/* NOISE OVERLAY */
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:1000;opacity:0.4;
-}
-
-/* CURSOR */
-#cur{position:fixed;width:6px;height:6px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s;}
-#cur-ring{position:fixed;width:40px;height:40px;border:1px solid rgba(201,168,76,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .08s linear;}
-#cur-ring.big{width:60px;height:60px;background:rgba(201,168,76,0.04);}
-
-/* LOADER */
-#loader{
-  position:fixed;inset:0;background:var(--bg);z-index:9000;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
-  transition:opacity 0.6s, visibility 0.6s;
-}
+body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;cursor:none;}
+#cur{position:fixed;width:12px;height:12px;background:var(--orange);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:multiply;transition:transform .15s;}
+#cur.h{transform:translate(-50%,-50%) scale(5);opacity:0.25;}
+#loader{position:fixed;inset:0;background:var(--dark);z-index:9000;display:flex;align-items:center;justify-content:center;transition:opacity .8s,visibility .8s;}
 #loader.hide{opacity:0;visibility:hidden;}
-.loader-logo{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;letter-spacing:4px;color:var(--white);}
-.loader-logo span{color:var(--gold);}
-.loader-bar{width:160px;height:1px;background:var(--border2);position:relative;overflow:hidden;}
-.loader-fill{position:absolute;left:0;top:0;height:100%;background:var(--gold);width:0%;transition:width 0.05s linear;}
-.loader-pct{font-size:11px;letter-spacing:3px;color:var(--gray);}
-
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:32px 60px;
-  transition:padding .3s, background .3s, border-color .3s;
-  border-bottom:1px solid transparent;
-}
-nav.sticky{padding:18px 60px;background:rgba(8,8,8,0.95);backdrop-filter:blur(20px);border-color:var(--border);}
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--white);text-decoration:none;letter-spacing:1px;}
-.nav-logo span{color:var(--gold);}
-.nav-links{display:flex;gap:36px;list-style:none;}
-.nav-links a{font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color .2s;}
-.nav-links a:hover{color:var(--gold);}
-.nav-hire{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--bg);background:var(--gold);padding:10px 22px;border-radius:1px;text-decoration:none;transition:background .2s;}
-.nav-hire:hover{background:var(--gold2);}
-
-/* HERO */
-.hero{
-  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
-  padding:160px 60px 100px;position:relative;overflow:hidden;
-}
-.hero-bg{
-  position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 60% 50% at 70% 50%, rgba(201,168,76,0.05) 0%, transparent 70%);
-}
-.hero-grid{
-  position:absolute;inset:0;pointer-events:none;
-  background-image:linear-gradient(var(--border2) 1px,transparent 1px),linear-gradient(90deg,var(--border2) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
-}
-.hero-available{
-  display:inline-flex;align-items:center;gap:8px;
-  border:1px solid var(--border);border-radius:100px;
-  padding:6px 16px 6px 10px;margin-bottom:48px;width:fit-content;
-  font-size:12px;color:var(--gray);letter-spacing:1px;
-  opacity:0;animation:up .8s .3s forwards;
-}
-.avail-dot{width:6px;height:6px;border-radius:50%;background:#4caf7c;box-shadow:0 0 6px #4caf7c;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-
-.hero-tag{
-  font-size:11px;font-weight:600;letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:24px;
-  opacity:0;animation:up .8s .4s forwards;
-}
-.hero-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(60px,8vw,110px);
-  font-weight:300;line-height:0.95;letter-spacing:-2px;
-  margin-bottom:40px;
-  opacity:0;animation:up .9s .5s forwards;
-}
-.hero-title .line{display:block;overflow:hidden;}
-.hero-title em{font-style:italic;color:var(--gold);}
-.hero-title .outline{
-  -webkit-text-stroke:1px rgba(255,255,255,0.25);
-  color:transparent;
-}
-.hero-bottom{
-  display:flex;align-items:flex-end;justify-content:space-between;
-  opacity:0;animation:up .8s .8s forwards;
-}
-.hero-desc{font-size:15px;color:var(--gray);line-height:1.8;max-width:380px;font-weight:400;}
-.hero-desc strong{color:var(--white);font-weight:500;}
-.hero-ctas{display:flex;flex-direction:column;align-items:flex-end;gap:16px;}
-.btn-gold{
-  display:inline-flex;align-items:center;gap:12px;
-  background:var(--gold);color:var(--bg);
-  padding:16px 36px;font-size:12px;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;text-decoration:none;
-  transition:background .2s,transform .2s;
-}
-.btn-gold:hover{background:var(--gold2);transform:translateY(-2px);}
-.btn-outline{
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--gray);text-decoration:none;
-  border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:2px;
-  transition:color .2s,border-color .2s;
-}
-.btn-outline:hover{color:var(--white);border-color:var(--gold);}
-
-.hero-scroll{
-  position:absolute;bottom:40px;left:60px;
-  display:flex;align-items:center;gap:14px;
-  font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gray);
-  opacity:0;animation:up .8s 1.2s forwards;
-}
-.scroll-line{width:40px;height:1px;background:var(--gold);position:relative;overflow:hidden;}
-.scroll-line::after{
-  content:'';position:absolute;left:-100%;top:0;width:100%;height:100%;
-  background:var(--white);animation:slide 2s 1.5s infinite;
-}
-@keyframes slide{0%{left:-100%;}100%{left:100%;}}
-
-/* MARQUEE */
-.marquee-wrap{
-  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
-  padding:18px 0;overflow:hidden;background:var(--bg2);position:relative;z-index:2;
-}
-.marquee-track{display:flex;gap:0;width:max-content;animation:marquee 20s linear infinite;}
-.marquee-item{
-  display:flex;align-items:center;gap:20px;padding:0 40px;
-  font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gray);
-  white-space:nowrap;
-}
-.marquee-item span{color:var(--gold);font-size:16px;}
-@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-
-/* ABOUT */
-.about{padding:140px 60px;max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;}
-.about-left .section-label{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
-.about-left h2{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,4vw,58px);font-weight:300;line-height:1.1;letter-spacing:-1px;margin-bottom:28px;}
-.about-left h2 em{font-style:italic;color:var(--gold);}
-.about-left p{font-size:15px;color:var(--gray);line-height:1.85;margin-bottom:16px;font-weight:400;}
-.about-nums{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px;padding-top:40px;border-top:1px solid var(--border);}
-.about-num .n{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:300;color:var(--white);line-height:1;}
-.about-num .n span{color:var(--gold);}
-.about-num .l{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-top:4px;}
-.about-right{position:relative;}
-.about-img-wrap{
-  background:var(--bg3);
-  border:1px solid var(--border);
-  border-radius:2px;
-  aspect-ratio:3/4;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-}
-.about-img-wrap::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(201,168,76,0.06) 0%,transparent 60%);
-}
-.about-cards-grid{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:32px;width:100%;z-index:1;
-}
-.ac{
-  background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.12);
-  border-radius:8px;padding:20px 16px;
-  display:flex;flex-direction:column;gap:8px;
-  transition:border-color .3s,transform .3s;
-}
-.ac:hover{border-color:rgba(201,168,76,0.35);transform:translateY(-3px);}
-.ac-icon{font-size:22px;}
-.ac-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);}
-.ac-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--white);line-height:1;}
-.ac-val span{color:var(--gold);}
-.about-monogram{display:none;}
-.about-badge{
-  position:absolute;bottom:-20px;right:-20px;
-  width:120px;height:120px;
-  background:var(--gold);border-radius:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2px;
-}
-.about-badge .b1{font-size:28px;font-weight:800;color:var(--bg);line-height:1;}
-.about-badge .b2{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(8,8,8,0.6);text-align:center;line-height:1.3;}
-.about-skills{
-  position:absolute;top:24px;left:-32px;
-  background:var(--bg);border:1px solid var(--border);
-  padding:16px 20px;border-radius:2px;
-  display:flex;flex-direction:column;gap:10px;
-  box-shadow:0 20px 50px rgba(0,0,0,0.4);
-}
-.skill-row{display:flex;align-items:center;gap:10px;}
-.skill-name{font-size:11px;font-weight:600;letter-spacing:1px;color:var(--white);min-width:60px;}
-.skill-bar{flex:1;height:3px;background:var(--border2);border-radius:2px;overflow:hidden;min-width:80px;}
-.skill-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;width:0%;transition:width 1.2s ease;}
-
-/* SERVICES */
-.services{padding:0 0 140px;background:var(--bg);}
-.services-inner{max-width:1300px;margin:0 auto;padding:0 60px;}
-.sec-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:70px;}
-.section-label{font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
-.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,4vw,54px);font-weight:300;line-height:1.1;letter-spacing:-1px;}
-.sec-title em{font-style:italic;color:var(--gold);}
-.sec-sub{font-size:14px;color:var(--gray);line-height:1.7;max-width:320px;font-weight:400;}
-.services-list{display:flex;flex-direction:column;gap:0;}
-.svc{
-  display:grid;grid-template-columns:80px 1fr 1fr auto;
-  align-items:center;gap:40px;
-  padding:32px 0;border-bottom:1px solid var(--border2);
-  transition:background .3s;cursor:none;
-  position:relative;
-}
-.svc::before{
-  content:'';position:absolute;left:-60px;right:-60px;top:0;bottom:0;
-  background:var(--gold-dim);opacity:0;transition:opacity .3s;pointer-events:none;
-}
-.svc:hover::before{opacity:1;}
-.svc:first-child{border-top:1px solid var(--border2);}
-.svc-num{font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--gold);letter-spacing:2px;}
-.svc-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--white);transition:color .3s;}
-.svc:hover .svc-name{color:var(--gold);}
-.svc-tags{display:flex;gap:8px;flex-wrap:wrap;}
-.svc-tag{
-  font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
-  border:1px solid var(--border);color:var(--gray);padding:5px 12px;border-radius:100px;
-}
-.svc-icon{font-size:24px;opacity:0;transform:translateX(-10px);transition:opacity .3s,transform .3s;}
-.svc:hover .svc-icon{opacity:1;transform:translateX(0);}
-
-/* WORK */
-.work{padding:0 0 140px;background:var(--bg2);}
-.work-inner{max-width:1300px;margin:0 auto;padding:0 60px;}
-.work-header-wrap{padding-top:120px;display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:60px;}
-.projects{display:grid;grid-template-columns:1fr 1fr;gap:3px;}
-.proj{position:relative;overflow:hidden;cursor:none;background:var(--bg3);}
-.proj.wide{grid-column:1/-1;}
-.proj-thumb{
-  position:relative;overflow:hidden;
-  height:340px;
-}
-.proj.wide .proj-thumb{height:460px;}
-.proj-bg{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .7s cubic-bezier(.25,.46,.45,.94);
-}
-.proj:hover .proj-bg{transform:scale(1.06);}
-.pb1{background:linear-gradient(145deg,#0a0805 0%,#1a1408 50%,#0d0a06 100%);}
-.pb2{background:linear-gradient(145deg,#050a08 0%,#0a1a10 50%,#060d09 100%);}
-.pb3{background:linear-gradient(145deg,#080508 0%,#150a18 50%,#0a0610 100%);}
-.pb4{background:linear-gradient(145deg,#0a0805 0%,#181005 50%,#0e0b05 100%);}
-.proj-mockup{
-  width:260px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:10px;overflow:hidden;
-  box-shadow:0 40px 80px rgba(0,0,0,0.5);
-  transform:perspective(1000px) rotateX(3deg);
-  transition:transform .5s;
-}
-.proj:hover .proj-mockup{transform:perspective(1000px) rotateX(0deg) translateY(-6px);}
-.proj.wide .proj-mockup{width:380px;}
-.pm-bar{
-  background:rgba(0,0,0,0.3);padding:9px 12px;
-  display:flex;align-items:center;gap:8px;
-  border-bottom:1px solid rgba(255,255,255,0.05);
-}
-.pm-dots{display:flex;gap:4px;}
-.pm-dot{width:7px;height:7px;border-radius:50%;}
-.pm-url{flex:1;background:rgba(255,255,255,0.05);border-radius:3px;height:16px;margin-left:6px;display:flex;align-items:center;padding:0 8px;}
-.pm-url span{font-size:8px;color:rgba(255,255,255,0.25);}
-.pm-body{padding:14px;}
-.pm-hero{border-radius:5px;height:80px;display:flex;align-items:center;padding:0 12px;margin-bottom:10px;position:relative;overflow:hidden;}
-.pm-title{font-family:'Cormorant Garamond',serif;font-size:14px;color:rgba(255,255,255,0.9);z-index:1;}
-.pm-rows{display:flex;flex-direction:column;gap:5px;}
-.pm-r{height:6px;background:rgba(255,255,255,0.07);border-radius:3px;}
-.pm-r.w9{width:90%}.pm-r.w7{width:70%}.pm-r.w8{width:80%}.pm-r.w5{width:50%}
-.pm-chips{display:flex;gap:5px;margin-top:8px;}
-.pm-chip{height:18px;width:44px;border-radius:9px;background:rgba(201,168,76,0.12);}
-
-.proj-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(8,8,8,0.9) 0%,transparent 55%);
-  opacity:0;transition:opacity .35s;
-}
-.proj:hover .proj-overlay{opacity:1;}
-.proj-content{
-  position:absolute;bottom:0;left:0;right:0;
-  padding:28px;
-  transform:translateY(10px);transition:transform .35s;
-}
-.proj:hover .proj-content{transform:translateY(0);}
-.proj-tag{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
-.proj-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:var(--white);}
-.proj-arrow{
-  position:absolute;top:24px;right:24px;
-  width:40px;height:40px;background:var(--gold);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;color:var(--bg);
-  opacity:0;transform:scale(0.8);transition:opacity .3s,transform .3s;
-}
-.proj:hover .proj-arrow{opacity:1;transform:scale(1);}
-.proj-info{padding:20px 24px;background:var(--bg3);border-top:1px solid var(--border2);}
-.proj-info-tag{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
-.proj-info-name{font-size:15px;font-weight:600;color:var(--white);}
-.proj-info-desc{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.5;}
-
-/* TOOLS */
-.tools{padding:120px 60px;background:var(--bg);max-width:1300px;margin:0 auto;}
-.tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:60px;}
-.tool-card{
-  background:var(--bg3);border:1px solid var(--border2);
-  padding:36px 28px;
-  transition:border-color .3s,transform .3s;
-  cursor:none;
-}
-.tool-card:hover{border-color:var(--border);transform:translateY(-4px);}
-.tool-icon{font-size:28px;margin-bottom:20px;}
-.tool-name{font-size:14px;font-weight:700;color:var(--white);margin-bottom:6px;letter-spacing:0.5px;}
-.tool-desc{font-size:12px;color:var(--gray);line-height:1.6;}
-.tool-badge{
-  display:inline-block;margin-top:14px;
-  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  padding:4px 10px;border-radius:100px;
-}
-.tb-main{background:rgba(201,168,76,0.12);color:var(--gold);}
-.tb-free{background:rgba(76,175,124,0.12);color:#4caf7c;}
-.tb-paid{background:rgba(255,255,255,0.06);color:var(--gray);}
-
-/* TESTIMONIALS */
-.testi{padding:0 60px 140px;background:var(--bg);}
-.testi-inner{max-width:1300px;margin:0 auto;}
-.testi-header{margin-bottom:60px;}
-.testi-slider{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-.t-card{
-  background:var(--bg3);border:1px solid var(--border2);
-  padding:40px;border-radius:2px;
-  transition:border-color .3s;
-}
-.t-card:hover{border-color:var(--border);}
-.t-stars{display:flex;gap:3px;margin-bottom:24px;}
-.t-star{color:var(--gold);font-size:13px;}
-.t-quote{
-  font-family:'Cormorant Garamond',serif;
-  font-size:15px;font-style:italic;color:rgba(255,255,255,0.7);
-  line-height:1.8;margin-bottom:28px;
-}
-.t-author{display:flex;align-items:center;gap:12px;}
-.t-av{
-  width:42px;height:42px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--bg);
-}
-.av-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));}
-.av-blue{background:linear-gradient(135deg,#4c7aaf,#6a9adf);}
-.av-green{background:linear-gradient(135deg,#4caf7c,#6acf9c);color:#0a2a18 !important;}
-.t-name{font-size:14px;font-weight:600;color:var(--white);}
-.t-role{font-size:11px;color:var(--gray);margin-top:2px;}
-
-/* PRICING */
-.pricing{padding:0 60px 140px;background:var(--bg2);}
-.pricing-inner{max-width:1200px;margin:0 auto;}
-.pricing-top{padding-top:120px;text-align:center;margin-bottom:60px;}
-.pricing-top .sec-sub{margin:16px auto 0;max-width:400px;}
-.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;}
-.p-card{background:var(--bg3);border:1px solid var(--border2);overflow:hidden;transition:transform .3s;}
-.p-card:hover{transform:translateY(-6px);}
-.p-card.hot{border-color:var(--gold);}
-.p-hot-bar{background:var(--gold);text-align:center;padding:9px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--bg);}
-.p-head{padding:36px 32px 28px;border-bottom:1px solid var(--border2);}
-.p-name{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:20px;}
-.p-price{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:var(--white);line-height:1;}
-.p-price sup{font-size:22px;vertical-align:top;margin-top:12px;display:inline-block;}
-.p-sub{font-size:12px;color:var(--gray);margin-top:8px;}
-.p-body{padding:28px 32px;}
-.p-feature{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);
-  font-size:13px;color:var(--gray);line-height:1.4;
-}
-.p-feature:last-child{border:none;}
-.pf-dot{color:var(--gold);font-size:16px;flex-shrink:0;line-height:1.2;}
-.p-cta{
-  display:block;margin:8px 32px 32px;
-  text-align:center;padding:14px;
-  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  text-decoration:none;border-radius:1px;
-  background:rgba(201,168,76,0.1);color:var(--gold);
-  border:1px solid var(--border);
-  transition:all .2s;
-}
-.p-cta:hover{background:var(--gold);color:var(--bg);}
-.p-card.hot .p-cta{background:var(--gold);color:var(--bg);}
-.p-card.hot .p-cta:hover{background:var(--gold2);}
-
-/* CONTACT */
-.contact{
-  padding:140px 60px;
-  background:var(--bg);
-  position:relative;overflow:hidden;
-}
-.contact::before{
-  content:'';position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:800px;height:800px;
-  background:radial-gradient(ellipse,rgba(201,168,76,0.04) 0%,transparent 70%);
-  pointer-events:none;
-}
-.contact-inner{max-width:900px;margin:0 auto;text-align:center;position:relative;}
-.contact-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(48px,6vw,80px);font-weight:300;line-height:1.05;letter-spacing:-1.5px;
-  margin-bottom:24px;
-}
-.contact-title em{font-style:italic;color:var(--gold);}
-.contact-sub{font-size:15px;color:var(--gray);line-height:1.7;margin-bottom:56px;font-weight:400;}
-.contact-form{
-  display:grid;grid-template-columns:1fr 1fr;gap:3px;
-  max-width:680px;margin:0 auto;
-}
-.c-input{
-  background:var(--bg3);border:1px solid var(--border2);
-  color:var(--white);padding:18px 22px;
-  font-size:13px;font-family:'Syne',sans-serif;
-  outline:none;transition:border-color .2s;
-  appearance:none;
-}
-.c-input::placeholder{color:var(--gray);}
-.c-input:focus{border-color:var(--gold);}
-.c-input.full{grid-column:1/-1;}
-.c-textarea{
-  grid-column:1/-1;
-  background:var(--bg3);border:1px solid var(--border2);
-  color:var(--white);padding:18px 22px;
-  font-size:13px;font-family:'Syne',sans-serif;
-  outline:none;transition:border-color .2s;
-  resize:vertical;min-height:120px;
-}
-.c-textarea::placeholder{color:var(--gray);}
-.c-textarea:focus{border-color:var(--gold);}
-.c-submit{
-  grid-column:1/-1;
-  background:var(--gold);color:var(--bg);
-  border:none;padding:18px;
-  font-size:12px;font-weight:700;font-family:'Syne',sans-serif;
-  letter-spacing:3px;text-transform:uppercase;
-  cursor:none;transition:background .2s,transform .2s;
-}
-.c-submit:hover{background:var(--gold2);transform:translateY(-2px);}
-.contact-alt{margin-top:40px;font-size:12px;color:var(--gray);letter-spacing:1px;}
-.contact-alt a{color:var(--gold);text-decoration:none;}
-
-/* FOOTER */
-footer{
-  padding:40px 60px;
-  background:var(--bg);
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.f-logo{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--white);font-weight:400;}
-.f-logo span{color:var(--gold);}
-.f-links{display:flex;gap:28px;}
-.f-links a{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);text-decoration:none;transition:color .2s;}
-.f-links a:hover{color:var(--gold);}
-.f-copy{font-size:11px;color:rgba(255,255,255,0.15);}
-
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease;}
+.l-word{font-family:'Unbounded',sans-serif;font-size:clamp(50px,10vw,120px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.15);letter-spacing:-4px;position:relative;overflow:hidden;}
+.l-fill{position:absolute;left:0;top:0;color:white;-webkit-text-stroke:0;white-space:nowrap;overflow:hidden;width:0%;transition:width .04s linear;}
+.l-pct{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:16px;text-align:center;}
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:24px 56px;display:flex;align-items:center;justify-content:space-between;mix-blend-mode:difference;}
+.n-logo{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:white;text-decoration:none;letter-spacing:0.5px;}
+.n-right{display:flex;align-items:center;gap:28px;}
+.n-link{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:white;text-decoration:none;opacity:0.5;transition:opacity .2s;}
+.n-link:hover{opacity:1;}
+.n-avail{width:7px;height:7px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,0.4);}50%{box-shadow:0 0 0 6px rgba(74,222,128,0);}}
+.hero{min-height:100vh;background:var(--dark);display:flex;flex-direction:column;justify-content:flex-end;padding:0 56px 64px;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:72px 72px;animation:gm 25s linear infinite;}
+@keyframes gm{from{background-position:0 0;}to{background-position:72px 72px;}}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;}
+.o1{width:600px;height:600px;background:rgba(232,93,47,0.12);top:-150px;right:-100px;animation:of 10s ease-in-out infinite;}
+.o2{width:400px;height:400px;background:rgba(37,99,235,0.08);bottom:50px;left:-50px;animation:of 10s ease-in-out infinite;animation-delay:-4s;}
+.o3{width:250px;height:250px;background:rgba(200,230,60,0.06);top:40%;left:35%;animation:of 10s ease-in-out infinite;animation-delay:-7s;}
+@keyframes of{0%,100%{transform:translate(0,0);}33%{transform:translate(40px,-30px);}66%{transform:translate(-30px,40px);}}
+.h-brow{display:flex;align-items:center;gap:12px;font-size:11px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:28px;opacity:0;animation:up .8s .5s forwards;}
+.h-line{width:28px;height:1px;background:var(--orange);}
+.h-title{font-family:'Unbounded',sans-serif;font-size:clamp(52px,10vw,140px);font-weight:900;line-height:0.88;letter-spacing:-5px;margin-bottom:0;}
+.tl{display:block;overflow:hidden;opacity:0;animation:up .9s forwards;}
+.tl:nth-child(1){animation-delay:.55s;}.tl:nth-child(2){animation-delay:.7s;}.tl:nth-child(3){animation-delay:.85s;}
+.tw{color:white;}.to{color:var(--orange);}.tg{color:transparent;-webkit-text-stroke:2px rgba(255,255,255,0.15);}
+.tbadge{display:inline-flex;background:var(--orange);color:white;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;padding:10px 22px;border-radius:100px;vertical-align:middle;margin-left:20px;transform:translateY(-10px);}
+.h-bot{display:flex;align-items:flex-end;justify-content:space-between;margin-top:64px;padding-top:40px;border-top:1px solid rgba(255,255,255,0.07);opacity:0;animation:up .8s 1.05s forwards;}
+.h-desc{font-size:15px;color:rgba(255,255,255,0.4);line-height:1.75;max-width:360px;font-weight:300;}
+.h-desc strong{color:rgba(255,255,255,0.8);font-weight:600;}
+.h-stats{display:flex;gap:52px;}
+.hs .n{font-family:'Unbounded',sans-serif;font-size:40px;font-weight:900;color:white;line-height:1;}
+.hs .n em{color:var(--orange);font-style:normal;}
+.hs .l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-top:6px;}
+.h-scroll{position:absolute;right:56px;bottom:64px;display:flex;flex-direction:column;align-items:center;gap:10px;opacity:0;animation:up .8s 1.3s forwards;}
+.h-scroll span{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.25);writing-mode:vertical-rl;}
+.h-bar{width:1px;height:56px;background:rgba(255,255,255,0.1);position:relative;overflow:hidden;}
+.h-bar::after{content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;background:linear-gradient(to bottom,transparent,var(--orange));animation:sd 2s 1.5s infinite;}
+@keyframes sd{to{top:200%;}}
+.mq{background:var(--orange);padding:14px 0;overflow:hidden;}
+.mq-track{display:flex;width:max-content;animation:mq 16s linear infinite;}
+.mi{display:flex;align-items:center;gap:14px;padding:0 28px;font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:white;white-space:nowrap;}
+.mi-dot{width:4px;height:4px;background:rgba(255,255,255,0.35);border-radius:50%;}
+@keyframes mq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.about{background:var(--cream);padding:120px 56px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.a-tag{display:inline-flex;background:var(--dark);color:white;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px 18px;border-radius:100px;margin-bottom:28px;}
+.a-title{font-family:'Unbounded',sans-serif;font-size:clamp(30px,3.5vw,48px);font-weight:700;letter-spacing:-2px;line-height:1.05;margin-bottom:24px;}
+.a-title em{font-style:italic;font-family:'Space Grotesk',sans-serif;font-weight:300;color:var(--orange);}
+.a-text{font-size:15px;color:var(--gray);line-height:1.85;margin-bottom:36px;}
+.a-cta{display:inline-flex;align-items:center;gap:12px;background:var(--dark);color:white;padding:16px 28px;border-radius:100px;font-size:13px;font-weight:700;text-decoration:none;transition:background .2s,transform .2s;}
+.a-cta:hover{background:var(--orange);transform:translateY(-2px);}
+.a-right{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:12px;}
+.abox{border-radius:20px;padding:28px;display:flex;flex-direction:column;justify-content:space-between;min-height:160px;transition:transform .3s;cursor:none;}
+.abox:hover{transform:scale(1.03);}
+.abox1{background:var(--dark);grid-row:1/3;min-height:340px;}
+.abox2{background:var(--orange);}
+.abox3{background:var(--lime);}
+.ab-icon{font-size:26px;margin-bottom:auto;}
+.ab-num{font-family:'Unbounded',sans-serif;font-size:52px;font-weight:900;line-height:1;margin-top:16px;}
+.abox1 .ab-num{color:white;}.abox2 .ab-num{color:white;}.abox3 .ab-num{color:var(--dark);}
+.ab-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.abox1 .ab-lbl{color:rgba(255,255,255,0.3);}.abox2 .ab-lbl{color:rgba(255,255,255,0.6);}.abox3 .ab-lbl{color:rgba(10,10,8,0.45);}
+.ab-big{font-family:'Unbounded',sans-serif;font-size:80px;font-weight:900;color:white;line-height:1;}
+.ab-big em{color:var(--orange);font-style:normal;}
+.ab-sub{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.ab-stars{display:flex;gap:3px;margin-top:24px;}
+.ab-star{color:var(--orange);font-size:18px;}
+.ab-rtxt{font-size:11px;color:rgba(255,255,255,0.3);margin-left:4px;}
+.svcs{background:var(--bg);padding:120px 56px;}
+.svcs-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;}
+.svcs-title{font-family:'Unbounded',sans-serif;font-size:clamp(30px,3.5vw,48px);font-weight:700;letter-spacing:-2px;line-height:1.05;}
+.svcs-title em{font-style:normal;color:var(--orange);}
+.svcs-sub{font-size:14px;color:var(--gray);max-width:260px;line-height:1.7;}
+.svcs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;}
+.svc{background:var(--cream);padding:44px;position:relative;overflow:hidden;cursor:none;transition:background .3s;}
+.svc::after{content:'';position:absolute;inset:0;background:var(--dark);transform:translateY(100%);transition:transform .45s cubic-bezier(.77,0,.175,1);}
+.svc:hover::after{transform:translateY(0);}
+.svc-in{position:relative;z-index:1;}
+.svc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;}
+.svc-n{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--orange);transition:color .3s;}
+.svc-ic{font-size:28px;}
+.svc-title{font-family:'Unbounded',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:14px;line-height:1.2;transition:color .3s;}
+.svc:hover .svc-title{color:white;}
+.svc-desc{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:20px;transition:color .3s;}
+.svc:hover .svc-desc{color:rgba(255,255,255,0.4);}
+.svc-tags{display:flex;flex-wrap:wrap;gap:7px;}
+.stag{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;border:1px solid var(--border);color:var(--gray);padding:5px 12px;border-radius:100px;transition:border-color .3s,color .3s;}
+.svc:hover .stag{border-color:rgba(255,255,255,0.12);color:rgba(255,255,255,0.35);}
+.work{background:var(--dark);padding:120px 56px;}
+.w-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;}
+.w-title{font-family:'Unbounded',sans-serif;font-size:clamp(30px,3.5vw,48px);font-weight:700;color:white;letter-spacing:-2px;line-height:1.05;}
+.w-title em{font-style:normal;color:var(--orange);}
+.w-link{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.3);text-decoration:none;transition:color .2s;}
+.w-link:hover{color:var(--orange);}
+.projs{display:flex;flex-direction:column;gap:3px;}
+.proj{background:#111110;display:grid;grid-template-columns:1fr 1fr;min-height:300px;overflow:hidden;cursor:none;transition:background .3s;}
+.proj:hover{background:#161614;}
+.p-vis{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.p-bg{position:absolute;inset:0;transition:transform .7s cubic-bezier(.25,.46,.45,.94);}
+.proj:hover .p-bg{transform:scale(1.07);}
+.pbg1{background:linear-gradient(135deg,#180d03,#2e1a08);}
+.pbg2{background:linear-gradient(135deg,#03080f,#081e30);}
+.pbg3{background:linear-gradient(135deg,#080f03,#152008);}
+.p-sc{width:210px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;box-shadow:0 24px 48px rgba(0,0,0,0.4);position:relative;z-index:1;transform:perspective(800px) rotateY(8deg) rotateX(-2deg);transition:transform .5s;}
+.proj:hover .p-sc{transform:perspective(800px) rotateY(3deg) rotateX(-1deg) translateY(-8px);}
+.ps-bar{background:rgba(0,0,0,0.4);padding:8px 10px;display:flex;gap:4px;}
+.ps-d{width:6px;height:6px;border-radius:50%;}
+.ps-b{padding:12px;}
+.ps-h{border-radius:6px;height:66px;margin-bottom:10px;display:flex;align-items:center;padding:0 10px;}
+.ps-ht{font-family:'Unbounded',sans-serif;font-size:9px;font-weight:700;color:white;letter-spacing:-0.3px;}
+.ps-r{height:5px;background:rgba(255,255,255,0.07);border-radius:3px;margin-bottom:5px;}
+.ps-chips{display:flex;gap:5px;margin-top:6px;}
+.ps-ch{height:14px;width:32px;border-radius:7px;}
+.p-ftag{position:absolute;top:20px;left:20px;background:var(--orange);color:white;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:100px;z-index:2;opacity:0;transform:translateY(-6px);transition:all .3s;}
+.proj:hover .p-ftag{opacity:1;transform:translateY(0);}
+.p-info{padding:44px;display:flex;flex-direction:column;justify-content:space-between;}
+.p-cat{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:12px;}
+.p-name{font-family:'Unbounded',sans-serif;font-size:clamp(20px,2.2vw,30px);font-weight:700;color:white;letter-spacing:-1px;line-height:1.1;margin-bottom:14px;}
+.p-desc{font-size:13px;color:rgba(255,255,255,0.3);line-height:1.7;}
+.p-bot{display:flex;align-items:center;justify-content:space-between;margin-top:28px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.05);}
+.p-tags{display:flex;gap:7px;flex-wrap:wrap;}
+.ptag{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.07);padding:4px 10px;border-radius:100px;}
+.p-no{font-family:'Unbounded',sans-serif;font-size:52px;font-weight:900;color:rgba(255,255,255,0.03);line-height:1;}
+.proc{background:var(--lime);padding:120px 56px;}
+.proc-title{font-family:'Unbounded',sans-serif;font-size:clamp(30px,3.5vw,48px);font-weight:700;letter-spacing:-2px;color:var(--dark);margin-bottom:56px;}
+.proc-title em{font-style:normal;-webkit-text-stroke:2px var(--dark);color:transparent;}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;}
+.step{background:rgba(10,10,8,0.06);padding:36px 28px;transition:background .3s,transform .3s;cursor:none;}
+.step:hover{background:var(--dark);transform:translateY(-6px);}
+.step:hover .st-n,.step:hover .st-title{color:white;}
+.step:hover .st-desc{color:rgba(255,255,255,0.45);}
+.step:hover .st-n{color:var(--orange);}
+.st-n{font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;color:rgba(10,10,8,0.3);margin-bottom:24px;transition:color .3s;}
+.st-ic{font-size:30px;margin-bottom:16px;}
+.st-title{font-family:'Unbounded',sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.5px;color:var(--dark);margin-bottom:10px;transition:color .3s;}
+.st-desc{font-size:13px;color:rgba(10,10,8,0.45);line-height:1.7;transition:color .3s;}
+.pricing{background:var(--cream);padding:120px 56px;}
+.pri-hd{text-align:center;margin-bottom:56px;}
+.pri-title{font-family:'Unbounded',sans-serif;font-size:clamp(30px,3.5vw,48px);font-weight:700;letter-spacing:-2px;margin-bottom:12px;}
+.pri-title em{font-style:normal;color:var(--orange);}
+.pri-sub{font-size:15px;color:var(--gray);max-width:380px;margin:0 auto;}
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.pcard{border-radius:20px;border:2px solid var(--border);overflow:hidden;transition:transform .3s,box-shadow .3s;cursor:none;}
+.pcard:hover{transform:translateY(-10px);box-shadow:0 40px 80px rgba(0,0,0,0.08);}
+.pcard.hot{border-color:var(--orange);}
+.pcard.hot:hover{box-shadow:0 40px 80px rgba(232,93,47,0.12);}
+.pc-bar{background:var(--orange);padding:11px;text-align:center;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:white;}
+.pc-head{padding:32px 28px 24px;}
+.pc-name{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:16px;}
+.pc-amount{font-family:'Unbounded',sans-serif;font-size:68px;font-weight:900;color:var(--dark);line-height:1;display:flex;align-items:flex-start;gap:3px;}
+.pc-amount sup{font-size:22px;margin-top:14px;}
+.pc-del{font-size:12px;color:var(--gray);margin-top:8px;font-weight:500;}
+.pc-div{height:1px;background:var(--border);margin:0 28px;}
+.pc-feats{padding:24px 28px;}
+.pc-feat{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:13px;color:var(--gray);border-bottom:1px solid rgba(0,0,0,0.04);}
+.pc-feat:last-child{border:none;}
+.pc-ck{width:18px;height:18px;background:var(--lime);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--dark);font-weight:800;flex-shrink:0;}
+.pcard.hot .pc-ck{background:var(--orange);color:white;}
+.pc-cta{display:block;margin:4px 28px 28px;text-align:center;padding:15px;font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;border-radius:100px;background:var(--bg);color:var(--dark);border:2px solid var(--border);transition:all .2s;}
+.pc-cta:hover{background:var(--dark);color:white;border-color:var(--dark);}
+.pcard.hot .pc-cta{background:var(--orange);color:white;border-color:var(--orange);}
+.pcard.hot .pc-cta:hover{background:var(--dark);border-color:var(--dark);}
+.testi{background:var(--bg);padding:120px 56px;}
+.t-hd{margin-bottom:56px;}
+.t-title{font-family:'Unbounded',sans-serif;font-size:clamp(30px,3.5vw,48px);font-weight:700;letter-spacing:-2px;line-height:1.05;}
+.t-title em{font-style:normal;color:var(--orange);}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.tc{background:var(--cream);border-radius:20px;padding:32px;transition:transform .3s,box-shadow .3s;cursor:none;}
+.tc:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,0.06);}
+.tc-stars{display:flex;gap:2px;margin-bottom:18px;}
+.tc-star{color:var(--orange);font-size:13px;}
+.tc-txt{font-size:15px;color:var(--ink);line-height:1.75;margin-bottom:24px;font-style:italic;font-weight:300;}
+.tc-auth{display:flex;align-items:center;gap:12px;}
+.tc-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Unbounded',sans-serif;font-size:15px;font-weight:700;color:white;}
+.ta1{background:var(--orange);}.ta2{background:var(--blue);}.ta3{background:var(--dark);}
+.tc-name{font-size:14px;font-weight:700;color:var(--ink);}
+.tc-role{font-size:12px;color:var(--gray);margin-top:2px;}
+.contact{background:var(--dark);padding:120px 56px;position:relative;overflow:hidden;}
+.ct-bg{position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 80% 50%,rgba(232,93,47,0.07) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 70%,rgba(37,99,235,0.05) 0%,transparent 70%);pointer-events:none;}
+.ct-in{max-width:860px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;}
+.ct-tag{display:inline-flex;background:rgba(232,93,47,0.12);color:var(--orange);border:1px solid rgba(232,93,47,0.2);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:8px 20px;border-radius:100px;margin-bottom:28px;}
+.ct-title{font-family:'Unbounded',sans-serif;font-size:clamp(42px,7vw,90px);font-weight:900;color:white;letter-spacing:-4px;line-height:0.92;margin-bottom:20px;}
+.ct-title em{font-style:italic;font-family:'Space Grotesk',sans-serif;font-weight:300;color:var(--orange);letter-spacing:-2px;}
+.ct-sub{font-size:15px;color:rgba(255,255,255,0.3);line-height:1.7;margin-bottom:48px;max-width:440px;}
+.ct-opts{display:flex;flex-direction:column;gap:10px;width:100%;max-width:520px;}
+.co{display:flex;align-items:center;gap:18px;padding:22px 24px;border-radius:16px;text-decoration:none;transition:transform .2s,background .2s;cursor:none;}
+.co:hover{transform:translateY(-3px);}
+.co-main{background:var(--orange);}.co-main:hover{background:var(--orange2);}
+.co-sec{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);}.co-sec:hover{background:rgba(255,255,255,0.07);}
+.co-ic{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.co-main .co-ic{background:rgba(255,255,255,0.18);}.co-sec .co-ic{background:rgba(255,255,255,0.05);}
+.co-txt{flex:1;text-align:left;}
+.co-lbl{font-size:15px;font-weight:700;color:white;}
+.co-sub{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;}
+.co-arr{color:rgba(255,255,255,0.35);font-size:18px;}
+.co-main .co-arr{color:rgba(255,255,255,0.65);}
+footer{background:var(--dark);padding:36px 56px;border-top:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;}
+.f-logo{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:white;}
+.f-logo span{color:var(--orange);}
+.f-links{display:flex;gap:24px;}
+.f-a{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.2);text-decoration:none;transition:color .2s;}
+.f-a:hover{color:rgba(255,255,255,0.6);}
+.f-copy{font-size:10px;color:rgba(255,255,255,0.1);}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .8s ease,transform .8s ease;}
 .reveal.on{opacity:1;transform:translateY(0);}
-.reveal-delay-1{transition-delay:.1s;}
-.reveal-delay-2{transition-delay:.2s;}
-.reveal-delay-3{transition-delay:.3s;}
-
-/* ANIMATIONS */
-@keyframes up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
-
-/* MOBILE */
-@media(max-width:960px){
-  nav{padding:20px 24px;}
-  nav.sticky{padding:14px 24px;}
-  .nav-links{display:none;}
-  .hero{padding:120px 24px 80px;}
-  .hero-bottom{flex-direction:column;align-items:flex-start;gap:32px;}
-  .hero-ctas{align-items:flex-start;}
-  .about{grid-template-columns:1fr;padding:80px 24px;gap:60px;}
-  .about-right{display:none;}
-  .services-inner,
-  .work-inner{padding:0 24px;}
-  .sec-header{flex-direction:column;align-items:flex-start;gap:16px;}
-  .services{padding:0 0 80px;}
-  .work{padding:0 0 80px;}
-  .work-header-wrap{padding-top:80px;flex-direction:column;align-items:flex-start;gap:16px;padding:80px 24px 0;}
-  .projects{grid-template-columns:1fr;}
-  .proj.wide{grid-column:auto;}
-  .tools{padding:80px 24px;}
-  .tools-grid{grid-template-columns:1fr 1fr;}
-  .testi{padding:0 24px 80px;}
-  .testi-slider{grid-template-columns:1fr;}
-  .pricing{padding:0 24px 80px;}
-  .p-grid{grid-template-columns:1fr;}
+.rd1{transition-delay:.1s;}.rd2{transition-delay:.2s;}.rd3{transition-delay:.3s;}
+@keyframes up{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:900px){
+  nav{padding:18px 24px;}
+  .n-right .n-link:not(:last-child){display:none;}
+  .hero{padding:0 24px 48px;}
+  .h-title{letter-spacing:-3px;}
+  .h-bot{flex-direction:column;gap:28px;align-items:flex-start;}
+  .about{grid-template-columns:1fr;padding:80px 24px;gap:40px;}
+  .a-right{height:220px;}
+  .svcs{padding:80px 24px;}.svcs-hd{flex-direction:column;gap:16px;align-items:flex-start;}
+  .svcs-grid{grid-template-columns:1fr;}
+  .work{padding:80px 24px;}.w-hd{flex-direction:column;gap:16px;align-items:flex-start;}
+  .projs .proj{grid-template-columns:1fr;}
+  .p-vis{height:220px;}
+  .proc{padding:80px 24px;}.steps{grid-template-columns:1fr 1fr;}
+  .pricing{padding:80px 24px;}.p-grid{grid-template-columns:1fr;}
+  .testi{padding:80px 24px;}.t-grid{grid-template-columns:1fr;}
   .contact{padding:80px 24px;}
-  .contact-form{grid-template-columns:1fr;}
-  .c-input{grid-column:auto;}
-  footer{flex-direction:column;gap:20px;text-align:center;padding:32px 24px;}
-  .f-links{flex-wrap:wrap;justify-content:center;}
-  .svc{grid-template-columns:40px 1fr;gap:16px;}
-  .svc-tags,.svc-icon{display:none;}
+  footer{flex-direction:column;gap:16px;text-align:center;padding:28px 24px;}
 }
-
-.contact-btns{display:flex;flex-direction:column;gap:12px;max-width:560px;margin:0 auto;}
-.contact-btn-main,.contact-btn-sec{
-  display:flex;align-items:center;gap:20px;
-  padding:22px 28px;border-radius:2px;text-decoration:none;
-  transition:transform .2s,border-color .2s;cursor:none;
-}
-.contact-btn-main{background:var(--gold);border:1px solid var(--gold);}
-.contact-btn-main:hover{background:var(--gold2);transform:translateY(-2px);}
-.contact-btn-main .cb-label{font-size:15px;font-weight:700;color:var(--bg);}
-.contact-btn-main .cb-sub{font-size:12px;color:rgba(8,8,8,0.6);margin-top:2px;}
-.contact-btn-main .cb-arr{color:var(--bg);font-size:20px;margin-left:auto;}
-.contact-btn-main .cb-icon{font-size:22px;}
-.contact-btn-sec{background:var(--bg3);border:1px solid var(--border2);}
-.contact-btn-sec:hover{border-color:var(--border);transform:translateY(-2px);}
-.contact-btn-sec .cb-label{font-size:15px;font-weight:600;color:var(--white);}
-.contact-btn-sec .cb-sub{font-size:12px;color:var(--gray);margin-top:2px;}
-.contact-btn-sec .cb-arr{color:var(--gold);font-size:20px;margin-left:auto;}
-.contact-btn-sec .cb-icon{font-size:22px;}
 </style>
 </head>
 <body>
-
 <div id="cur"></div>
-<div id="cur-ring"></div>
-
-<!-- LOADER -->
-<div id="loader">
-  <div class="loader-logo">P<span>.</span>J</div>
-  <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
-  <div class="loader-pct" id="loaderPct">0%</div>
-</div>
-
-<!-- NAV -->
-<nav id="nav">
-  <a href="#" class="nav-logo">Paurav<span>.</span></a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#work">Work</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#contact" class="nav-hire">Hire Me</a></li>
-  </ul>
+<div id="loader"><div><div class="l-word">LANCY<div class="l-fill" id="lf">LANCY</div></div><div class="l-pct" id="lpct">0%</div></div></div>
+<nav>
+  <a href="#" class="n-logo">LANCY<span style="color:var(--orange)">.</span></a>
+  <div class="n-right">
+    <a href="#work" class="n-link">Work</a>
+    <a href="#pricing" class="n-link">Pricing</a>
+    <a href="#contact" class="n-link">Contact</a>
+    <div class="n-avail"></div>
+  </div>
 </nav>
-
-<!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <div class="hero-available">
-    <div class="avail-dot"></div>
-    Available for new projects
-  </div>
-  <p class="hero-tag">Founder, Lancy Digital</p>
-  <h1 class="hero-title">
-    <span class="line">I build websites</span>
-    <span class="line">&amp; apps that</span>
-    <span class="line"><em>grow</em> <span class="outline">businesses.</span></span>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="h-brow"><div class="h-line"></div>Paurav Joshi &middot; Lancy Digital &middot; Available Now</div>
+  <h1 class="h-title">
+    <span class="tl"><span class="tw">WE BUILD</span></span>
+    <span class="tl"><span class="tg">DIGITAL</span><span class="tbadge">& Apps</span></span>
+    <span class="tl"><span class="to">THAT WORK.</span></span>
   </h1>
-  <div class="hero-bottom">
-    <p class="hero-desc">
-      <strong>Paurav Joshi</strong> — digital agency helping restaurants, salons &amp; local businesses get online fast, look premium, and convert visitors into customers.
-    </p>
-    <div class="hero-ctas">
-      <a href="#work" class="btn-gold">View My Work →</a>
-      <a href="#contact" class="btn-outline">Start a project</a>
+  <div class="h-bot">
+    <p class="h-desc"><strong>Fast. Beautiful. Affordable.</strong> Custom websites and apps for restaurants, salons, shops and local businesses. Delivered in 48 hours.</p>
+    <div class="h-stats">
+      <div class="hs"><div class="n" id="c1">40<em>+</em></div><div class="l">Projects</div></div>
+      <div class="hs"><div class="n">5<em>★</em></div><div class="l">Rating</div></div>
+      <div class="hs"><div class="n">48<em>h</em></div><div class="l">Delivery</div></div>
     </div>
   </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    Scroll to explore
-  </div>
+  <div class="h-scroll"><div class="h-bar"></div><span>Scroll</span></div>
 </section>
-
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track" id="marquee">
-    <div class="marquee-item"><span>✦</span> Website Design</div>
-    <div class="marquee-item"><span>✦</span> Web Applications</div>
-    <div class="marquee-item"><span>✦</span> Brand Identity</div>
-    <div class="marquee-item"><span>✦</span> Restaurant Apps</div>
-    <div class="marquee-item"><span>✦</span> Booking Systems</div>
-    <div class="marquee-item"><span>✦</span> Fast Delivery</div>
-    <div class="marquee-item"><span>✦</span> 48hr Delivery</div>
-    <div class="marquee-item"><span>✦</span> Website Design</div>
-    <div class="marquee-item"><span>✦</span> Web Applications</div>
-    <div class="marquee-item"><span>✦</span> Brand Identity</div>
-    <div class="marquee-item"><span>✦</span> Restaurant Apps</div>
-    <div class="marquee-item"><span>✦</span> Booking Systems</div>
-    <div class="marquee-item"><span>✦</span> Fast Delivery</div>
-    <div class="marquee-item"><span>✦</span> 48hr Delivery</div>
+<div class="mq">
+  <div class="mq-track">
+    <div class="mi">Website Design<div class="mi-dot"></div></div>
+    <div class="mi">Web Apps<div class="mi-dot"></div></div>
+    <div class="mi">Brand Identity<div class="mi-dot"></div></div>
+    <div class="mi">Restaurant Sites<div class="mi-dot"></div></div>
+    <div class="mi">Booking Systems<div class="mi-dot"></div></div>
+    <div class="mi">48hr Delivery<div class="mi-dot"></div></div>
+    <div class="mi">5&#9733; Rated<div class="mi-dot"></div></div>
+    <div class="mi">Website Design<div class="mi-dot"></div></div>
+    <div class="mi">Web Apps<div class="mi-dot"></div></div>
+    <div class="mi">Brand Identity<div class="mi-dot"></div></div>
+    <div class="mi">Restaurant Sites<div class="mi-dot"></div></div>
+    <div class="mi">Booking Systems<div class="mi-dot"></div></div>
+    <div class="mi">48hr Delivery<div class="mi-dot"></div></div>
+    <div class="mi">5&#9733; Rated<div class="mi-dot"></div></div>
   </div>
 </div>
-
-<!-- ABOUT -->
 <section class="about" id="about">
-  <div class="about-left reveal">
-    <p class="section-label">About Me</p>
-    <h2>Building the <em>digital future</em> of local business</h2>
-    <p>I'm Paurav Joshi, founder of Lancy Digital. I help restaurants, salons, gyms, and shops get professional websites and apps — without the big agency price tag or the long wait.</p>
-    <p>I deliver stunning, fully custom digital experiences in 48–72 hours. Every project is built from scratch — no templates, no shortcuts — just expert craftsmanship and fast delivery.</p>
-    <div class="about-nums">
-      <div class="about-num"><div class="n">40<span>+</span></div><div class="l">Projects Delivered</div></div>
-      <div class="about-num"><div class="n">5<span>★</span></div><div class="l">Client Rating</div></div>
-      <div class="about-num"><div class="n">48<span>h</span></div><div class="l">Avg Turnaround</div></div>
-      <div class="about-num"><div class="n">3<span>+</span></div><div class="l">Years Experience</div></div>
-    </div>
-  </div>
-  <div class="about-right reveal reveal-delay-2">
-    <div class="about-img-wrap">
-      <div class="about-cards-grid">
-        <div class="ac"><div class="ac-icon">🌐</div><div class="ac-label">Websites</div><div class="ac-val">30<span>+</span></div></div>
-        <div class="ac"><div class="ac-icon">📱</div><div class="ac-label">Web Apps</div><div class="ac-val">8<span>+</span></div></div>
-        <div class="ac"><div class="ac-icon">✦</div><div class="ac-label">Brands</div><div class="ac-val">12<span>+</span></div></div>
-        <div class="ac"><div class="ac-icon">⚡</div><div class="ac-label">Delivery</div><div class="ac-val">48<span>h</span></div></div>
-      </div>
-      <div class="about-badge">
-        <div class="b1">5★</div>
-        <div class="b2">Rated<br>Agency</div>
-      </div>
-    </div>
-    <div class="about-skills">
-      <div class="skill-row">
-        <div class="skill-name">Design</div>
-        <div class="skill-bar"><div class="skill-fill" data-w="92"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-name">Dev</div>
-        <div class="skill-bar"><div class="skill-fill" data-w="88"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-name">Branding</div>
-        <div class="skill-bar"><div class="skill-fill" data-w="85"></div></div>
-      </div>
-      <div class="skill-row">
-        <div class="skill-name">SEO</div>
-        <div class="skill-bar"><div class="skill-fill" data-w="78"></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICES -->
-<section class="services" id="services">
-  <div class="services-inner">
-    <div class="sec-header reveal">
-      <div>
-        <p class="section-label">What I Do</p>
-        <h2 class="sec-title">Services that <em>deliver</em></h2>
-      </div>
-      <p class="sec-sub">Everything a local business needs to thrive online — under one roof.</p>
-    </div>
-    <div class="services-list reveal">
-      <div class="svc">
-        <div class="svc-num">01</div>
-        <div class="svc-name">Website Design & Development</div>
-        <div class="svc-tags">
-          <span class="svc-tag">HTML/CSS/JS</span>
-          <span class="svc-tag">Mobile First</span>
-          <span class="svc-tag">SEO Ready</span>
-        </div>
-        <div class="svc-icon">→</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">02</div>
-        <div class="svc-name">Web Apps & Booking Systems</div>
-        <div class="svc-tags">
-          <span class="svc-tag">Restaurant</span>
-          <span class="svc-tag">Salon</span>
-          <span class="svc-tag">E-Commerce</span>
-        </div>
-        <div class="svc-icon">→</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">03</div>
-        <div class="svc-name">Brand Identity & Logo Design</div>
-        <div class="svc-tags">
-          <span class="svc-tag">Logo</span>
-          <span class="svc-tag">Brand Kit</span>
-          <span class="svc-tag">Social Media</span>
-        </div>
-        <div class="svc-icon">→</div>
-      </div>
-      <div class="svc">
-        <div class="svc-num">04</div>
-        <div class="svc-name">Monthly Maintenance & SEO</div>
-        <div class="svc-tags">
-          <span class="svc-tag">Hosting</span>
-          <span class="svc-tag">Updates</span>
-          <span class="svc-tag">Google Rankings</span>
-        </div>
-        <div class="svc-icon">→</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WORK -->
-<section class="work" id="work">
-  <div class="work-inner">
-    <div class="work-header-wrap reveal">
-      <div>
-        <p class="section-label">Portfolio</p>
-        <h2 class="sec-title">Selected <em>work</em></h2>
-      </div>
-      <a href="#contact" class="btn-outline">Start your project →</a>
-    </div>
-    <div class="projects reveal">
-
-      <div class="proj wide">
-        <div class="proj-thumb">
-          <div class="proj-bg pb1">
-            <div class="proj-mockup">
-              <div class="pm-bar">
-                <div class="pm-dots"><div class="pm-dot" style="background:#ff5f56"></div><div class="pm-dot" style="background:#ffbd2e;margin-left:3px"></div><div class="pm-dot" style="background:#27c93f;margin-left:3px"></div></div>
-                <div class="pm-url"><span>bella-cucina.com</span></div>
-              </div>
-              <div class="pm-body">
-                <div class="pm-hero" style="background:linear-gradient(135deg,#1a1209,#3a2812)"><span class="pm-title">Bella Cucina — Authentic Italian</span></div>
-                <div class="pm-rows"><div class="pm-r w9"></div><div class="pm-r w7"></div><div class="pm-r w8"></div></div>
-                <div class="pm-chips"><div class="pm-chip"></div><div class="pm-chip"></div><div class="pm-chip"></div></div>
-              </div>
-            </div>
-          </div>
-          <div class="proj-overlay"></div>
-          <div class="proj-arrow">↗</div>
-          <div class="proj-content">
-            <div class="proj-tag">Restaurant · Website + Booking</div>
-            <div class="proj-name">Bella Cucina Italian Restaurant</div>
-          </div>
-        </div>
-        <div class="proj-info">
-          <div class="proj-info-tag">Full Website + App</div>
-          <div class="proj-info-name">Bella Cucina Italian Restaurant</div>
-          <div class="proj-info-desc">Menu, online booking, gallery & Google Maps integration. Delivered in 3 days.</div>
-        </div>
-      </div>
-
-      <div class="proj">
-        <div class="proj-thumb">
-          <div class="proj-bg pb2">
-            <div class="proj-mockup">
-              <div class="pm-bar">
-                <div class="pm-dots"><div class="pm-dot" style="background:#ff5f56"></div><div class="pm-dot" style="background:#ffbd2e;margin-left:3px"></div><div class="pm-dot" style="background:#27c93f;margin-left:3px"></div></div>
-                <div class="pm-url"><span>bloom-salon.com</span></div>
-              </div>
-              <div class="pm-body">
-                <div class="pm-hero" style="background:linear-gradient(135deg,#0e1a14,#1a3020)"><span class="pm-title">Bloom & Co</span></div>
-                <div class="pm-rows"><div class="pm-r w8"></div><div class="pm-r w5"></div></div>
-                <div class="pm-chips"><div class="pm-chip"></div><div class="pm-chip"></div></div>
-              </div>
-            </div>
-          </div>
-          <div class="proj-overlay"></div>
-          <div class="proj-arrow">↗</div>
-          <div class="proj-content">
-            <div class="proj-tag">Salon · Booking System</div>
-            <div class="proj-name">Bloom & Co Hair Salon</div>
-          </div>
-        </div>
-        <div class="proj-info">
-          <div class="proj-info-tag">Website + Booking</div>
-          <div class="proj-info-name">Bloom & Co Hair Salon</div>
-          <div class="proj-info-desc">Appointment booking, service menu & stylist profiles.</div>
-        </div>
-      </div>
-
-      <div class="proj">
-        <div class="proj-thumb">
-          <div class="proj-bg pb3">
-            <div class="proj-mockup">
-              <div class="pm-bar">
-                <div class="pm-dots"><div class="pm-dot" style="background:#ff5f56"></div><div class="pm-dot" style="background:#ffbd2e;margin-left:3px"></div><div class="pm-dot" style="background:#27c93f;margin-left:3px"></div></div>
-                <div class="pm-url"><span>fitcore-gym.com</span></div>
-              </div>
-              <div class="pm-body">
-                <div class="pm-hero" style="background:linear-gradient(135deg,#1a1520,#2a1e30)"><span class="pm-title">FitCore Gym</span></div>
-                <div class="pm-rows"><div class="pm-r w9"></div><div class="pm-r w7"></div></div>
-                <div class="pm-chips"><div class="pm-chip"></div><div class="pm-chip"></div><div class="pm-chip"></div></div>
-              </div>
-            </div>
-          </div>
-          <div class="proj-overlay"></div>
-          <div class="proj-arrow">↗</div>
-          <div class="proj-content">
-            <div class="proj-tag">Gym · Timetable + Memberships</div>
-            <div class="proj-name">FitCore Gym & Studio</div>
-          </div>
-        </div>
-        <div class="proj-info">
-          <div class="proj-info-tag">Website + App</div>
-          <div class="proj-info-name">FitCore Gym & Studio</div>
-          <div class="proj-info-desc">Class timetable, membership plans & lead capture.</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- TOOLS -->
-<section class="tools" id="tools">
   <div class="reveal">
-    <p class="section-label">My Toolstack</p>
-    <h2 class="sec-title">My <em>toolstack</em></h2>
+    <div class="a-tag">&#10022; About Me</div>
+    <h2 class="a-title">I turn ideas into <em>digital reality.</em></h2>
+    <p class="a-text">I'm Paurav Joshi, founder of Lancy Digital. I build stunning websites and web apps for restaurants, salons, gyms, and shops — fast, affordable, and completely custom. No templates. No cookie-cutter designs. Just real craft.</p>
+    <a href="#contact" class="a-cta">Let's Work Together &#8594;</a>
   </div>
-  <div class="tools-grid reveal">
-    <div class="tool-card">
-      <div class="tool-icon">🤖</div>
-      <div class="tool-name">Claude AI</div>
-      <div class="tool-desc">Primary engine for all code, copy, and architecture. Every site is custom-built with Claude.</div>
-      <span class="tool-badge tb-main">Core Tool</span>
+  <div class="a-right reveal rd2">
+    <div class="abox abox1">
+      <div class="ab-icon">&#127760;</div>
+      <div>
+        <div class="ab-big">40<em>+</em></div>
+        <div class="ab-sub">Projects Delivered</div>
+        <div class="ab-stars"><span class="ab-star">&#9733;</span><span class="ab-star">&#9733;</span><span class="ab-star">&#9733;</span><span class="ab-star">&#9733;</span><span class="ab-star">&#9733;</span><span class="ab-rtxt">5.0 rated</span></div>
+      </div>
     </div>
-    <div class="tool-card">
-      <div class="tool-icon">🎨</div>
-      <div class="tool-name">Midjourney</div>
-      <div class="tool-desc">AI-generated custom imagery and hero visuals. No stock photos.</div>
-      <span class="tool-badge tb-paid">Design</span>
+    <div class="abox abox2">
+      <div class="ab-icon">&#9889;</div>
+      <div class="ab-num">48h</div>
+      <div class="ab-lbl">Delivery</div>
     </div>
-    <div class="tool-card">
-      <div class="tool-icon">⚡</div>
-      <div class="tool-name">Netlify / GitHub</div>
-      <div class="tool-desc">Instant deployment and free hosting. Sites go live in minutes.</div>
-      <span class="tool-badge tb-free">Free Hosting</span>
-    </div>
-    <div class="tool-card">
-      <div class="tool-icon">📅</div>
-      <div class="tool-name">Booking Systems</div>
-      <div class="tool-desc">Calendly, Setmore & custom booking apps integrated into every site.</div>
-      <span class="tool-badge tb-paid">Add-On</span>
+    <div class="abox abox3">
+      <div class="ab-icon">&#10022;</div>
+      <div class="ab-num" style="color:var(--dark)">$15</div>
+      <div class="ab-lbl">Starting From</div>
     </div>
   </div>
 </section>
-
-<!-- TESTIMONIALS -->
-<section class="testi" id="reviews">
-  <div class="testi-inner">
-    <div class="testi-header reveal">
-      <p class="section-label">Client Reviews</p>
-      <h2 class="sec-title">What clients <em>say</em></h2>
+<section class="svcs" id="services">
+  <div class="svcs-hd reveal">
+    <div><h2 class="svcs-title">What I<br><em>deliver</em></h2></div>
+    <p class="svcs-sub">Everything your local business needs to look great and grow online.</p>
+  </div>
+  <div class="svcs-grid reveal">
+    <div class="svc"><div class="svc-in"><div class="svc-top"><div class="svc-n">01 &mdash;</div><div class="svc-ic">&#127760;</div></div><h3 class="svc-title">Website Design &amp; Development</h3><p class="svc-desc">Beautiful, fast, mobile-first websites built from scratch. Delivered in 1&ndash;3 days.</p><div class="svc-tags"><span class="stag">Custom Design</span><span class="stag">Mobile First</span><span class="stag">SEO Ready</span></div></div></div>
+    <div class="svc"><div class="svc-in"><div class="svc-top"><div class="svc-n">02 &mdash;</div><div class="svc-ic">&#128241;</div></div><h3 class="svc-title">Web Apps &amp; Booking Systems</h3><p class="svc-desc">Online ordering, appointment booking, menus and admin panels for all business types.</p><div class="svc-tags"><span class="stag">Restaurants</span><span class="stag">Salons</span><span class="stag">Bookings</span></div></div></div>
+    <div class="svc"><div class="svc-in"><div class="svc-top"><div class="svc-n">03 &mdash;</div><div class="svc-ic">&#10022;</div></div><h3 class="svc-title">Brand Identity &amp; Logo Design</h3><p class="svc-desc">Logos, colour palettes, and brand kits that make your business memorable.</p><div class="svc-tags"><span class="stag">Logo</span><span class="stag">Brand Kit</span><span class="stag">Social Media</span></div></div></div>
+    <div class="svc"><div class="svc-in"><div class="svc-top"><div class="svc-n">04 &mdash;</div><div class="svc-ic">&#128200;</div></div><h3 class="svc-title">Monthly Support &amp; SEO</h3><p class="svc-desc">Ongoing updates, hosting management, and Google ranking improvements.</p><div class="svc-tags"><span class="stag">Hosting</span><span class="stag">Updates</span><span class="stag">Google SEO</span></div></div></div>
+  </div>
+</section>
+<section class="work" id="work">
+  <div class="w-hd reveal"><h2 class="w-title">Selected<br><em>Work</em></h2><a href="#contact" class="w-link">Start a project &#8594;</a></div>
+  <div class="projs reveal">
+    <div class="proj">
+      <div class="p-vis"><div class="p-bg pbg1"></div><div class="p-ftag">Restaurant &middot; Website + App</div>
+        <div class="p-sc"><div class="ps-bar"><div class="ps-d" style="background:#ff5f56"></div><div class="ps-d" style="background:#ffbd2e;margin-left:3px"></div><div class="ps-d" style="background:#27c93f;margin-left:3px"></div></div><div class="ps-b"><div class="ps-h" style="background:linear-gradient(135deg,#180d03,#2e1a08)"><span class="ps-ht">Bella Cucina</span></div><div class="ps-r" style="width:90%"></div><div class="ps-r" style="width:70%"></div><div class="ps-chips"><div class="ps-ch" style="background:rgba(232,93,47,0.25)"></div><div class="ps-ch" style="background:rgba(255,255,255,0.07)"></div></div></div></div>
+      </div>
+      <div class="p-info"><div><div class="p-cat">Restaurant &middot; Italy</div><h3 class="p-name">Bella Cucina Italian Restaurant</h3><p class="p-desc">Full website with online menu, table reservation system, photo gallery and Google Maps. Delivered in 3 days.</p></div><div class="p-bot"><div class="p-tags"><span class="ptag">Website</span><span class="ptag">Booking</span><span class="ptag">Menu</span></div><div class="p-no">01</div></div></div>
     </div>
-    <div class="testi-slider reveal">
-      <div class="t-card">
-        <div class="t-stars"><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span></div>
-        <p class="t-quote">"Our bookings went up 40% the month after launch. Paurav built exactly what I envisioned — delivered ahead of time and looked better than I ever expected."</p>
-        <div class="t-author">
-          <div class="t-av av-gold">M</div>
-          <div><div class="t-name">Marco Rossi</div><div class="t-role">Bella Cucina Restaurant</div></div>
-        </div>
+    <div class="proj">
+      <div class="p-vis"><div class="p-bg pbg2"></div><div class="p-ftag">Salon &middot; Booking System</div>
+        <div class="p-sc"><div class="ps-bar"><div class="ps-d" style="background:#ff5f56"></div><div class="ps-d" style="background:#ffbd2e;margin-left:3px"></div><div class="ps-d" style="background:#27c93f;margin-left:3px"></div></div><div class="ps-b"><div class="ps-h" style="background:linear-gradient(135deg,#03080f,#081e30)"><span class="ps-ht">Bloom &amp; Co</span></div><div class="ps-r" style="width:90%"></div><div class="ps-r" style="width:55%"></div><div class="ps-chips"><div class="ps-ch" style="background:rgba(37,99,235,0.25)"></div><div class="ps-ch" style="background:rgba(255,255,255,0.07)"></div></div></div></div>
       </div>
-      <div class="t-card">
-        <div class="t-stars"><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span></div>
-        <p class="t-quote">"Honestly shocked at the quality for the price. My clients keep asking who made my website. Professional, fast, and genuinely cares about the result."</p>
-        <div class="t-author">
-          <div class="t-av av-blue">S</div>
-          <div><div class="t-name">Sarah Mitchell</div><div class="t-role">Bloom & Co Salon</div></div>
-        </div>
+      <div class="p-info"><div><div class="p-cat">Hair Salon &middot; UK</div><h3 class="p-name">Bloom &amp; Co Hair Salon</h3><p class="p-desc">Appointment booking, service menu, stylist profiles and before/after gallery. Delivered in 2 days.</p></div><div class="p-bot"><div class="p-tags"><span class="ptag">Booking</span><span class="ptag">Gallery</span><span class="ptag">Mobile</span></div><div class="p-no">02</div></div></div>
+    </div>
+    <div class="proj">
+      <div class="p-vis"><div class="p-bg pbg3"></div><div class="p-ftag">Gym &middot; Full Web App</div>
+        <div class="p-sc"><div class="ps-bar"><div class="ps-d" style="background:#ff5f56"></div><div class="ps-d" style="background:#ffbd2e;margin-left:3px"></div><div class="ps-d" style="background:#27c93f;margin-left:3px"></div></div><div class="ps-b"><div class="ps-h" style="background:linear-gradient(135deg,#080f03,#152008)"><span class="ps-ht">FitCore Gym</span></div><div class="ps-r" style="width:90%"></div><div class="ps-r" style="width:70%"></div><div class="ps-chips"><div class="ps-ch" style="background:rgba(200,230,60,0.3)"></div><div class="ps-ch" style="background:rgba(255,255,255,0.07)"></div></div></div></div>
       </div>
-      <div class="t-card">
-        <div class="t-stars"><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span><span class="t-star">★</span></div>
-        <p class="t-quote">"No jargon, no drama. He just delivered. I've already recommended Paurav to three other business owners — the best investment I made this year."</p>
-        <div class="t-author">
-          <div class="t-av av-green">J</div>
-          <div><div class="t-name">James Okoro</div><div class="t-role">FitCore Gym</div></div>
-        </div>
-      </div>
+      <div class="p-info"><div><div class="p-cat">Fitness Studio &middot; UK</div><h3 class="p-name">FitCore Gym &amp; Studio</h3><p class="p-desc">Class timetable, membership plans, trainer bios, and lead capture form. Delivered in 4 days.</p></div><div class="p-bot"><div class="p-tags"><span class="ptag">Timetable</span><span class="ptag">Members</span><span class="ptag">SEO</span></div><div class="p-no">03</div></div></div>
     </div>
   </div>
 </section>
-
-<!-- PRICING -->
+<section class="proc" id="process">
+  <h2 class="proc-title reveal">How it<br><em>works</em></h2>
+  <div class="steps reveal">
+    <div class="step"><div class="st-n">STEP 01</div><div class="st-ic">&#128172;</div><h3 class="st-title">We Talk</h3><p class="st-desc">Quick chat about your business, goals, and what you need. No jargon, no pressure.</p></div>
+    <div class="step"><div class="st-n">STEP 02</div><div class="st-ic">&#127912;</div><h3 class="st-title">We Design</h3><p class="st-desc">Your site is built completely custom. No templates, no shortcuts &mdash; real craftsmanship.</p></div>
+    <div class="step"><div class="st-n">STEP 03</div><div class="st-ic">&#9999;&#65039;</div><h3 class="st-title">You Review</h3><p class="st-desc">You see a live preview and request changes. We refine until you love it.</p></div>
+    <div class="step"><div class="st-n">STEP 04</div><div class="st-ic">&#128640;</div><h3 class="st-title">We Launch</h3><p class="st-desc">Your site goes live. I handle hosting, domain setup, and ongoing support.</p></div>
+  </div>
+</section>
 <section class="pricing" id="pricing">
-  <div class="pricing-inner">
-    <div class="pricing-top reveal">
-      <p class="section-label">Pricing</p>
-      <h2 class="sec-title">Simple, <em>honest</em> pricing</h2>
-      <p class="sec-sub">No hidden fees. No surprises. Just transparent pricing for quality work.</p>
+  <div class="pri-hd reveal"><h2 class="pri-title">Prices that <em>beat</em> everyone.</h2><p class="pri-sub">Market-beating prices with zero compromise on quality.</p></div>
+  <div class="p-grid reveal">
+    <div class="pcard">
+      <div class="pc-head"><div class="pc-name">Starter</div><div class="pc-amount"><sup>$</sup>15</div><div class="pc-del">1 day delivery &middot; One-time</div></div>
+      <div class="pc-div"></div>
+      <div class="pc-feats"><div class="pc-feat"><div class="pc-ck">&#10003;</div> Single page website</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Mobile responsive</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Contact form</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Google Maps embed</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> 2 revisions</div></div>
+      <a href="https://www.fiverr.com/youwinworld" target="_blank" class="pc-cta">Order Now &#8594;</a>
     </div>
-    <div class="p-grid reveal">
-      <div class="p-card">
-        <div class="p-head">
-          <div class="p-name">Starter</div>
-          <div class="p-price"><sup>$</sup>15</div>
-          <div class="p-sub">One-time · 1 day delivery</div>
-        </div>
-        <div class="p-body">
-          <div class="p-feature"><span class="pf-dot">✦</span> Single page website</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Mobile responsive</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Contact form</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Google Maps embed</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> 2 revisions</div>
-        </div>
-        <a href="#contact" class="p-cta">Get Started</a>
-      </div>
-      <div class="p-card hot">
-        <div class="p-hot-bar">Most Popular</div>
-        <div class="p-head">
-          <div class="p-name">Business</div>
-          <div class="p-price"><sup>$</sup>45</div>
-          <div class="p-sub">One-time · 3 day delivery</div>
-        </div>
-        <div class="p-body">
-          <div class="p-feature"><span class="pf-dot">✦</span> Up to 5 pages</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Booking integration</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Photo gallery</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> SEO optimised</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Unlimited revisions</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> 30 days support</div>
-        </div>
-        <a href="#contact" class="p-cta">Get Started</a>
-      </div>
-      <div class="p-card">
-        <div class="p-head">
-          <div class="p-name">App + Brand</div>
-          <div class="p-price"><sup>$</sup>99</div>
-          <div class="p-sub">One-time · 5 day delivery</div>
-        </div>
-        <div class="p-body">
-          <div class="p-feature"><span class="pf-dot">✦</span> Full web app</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Online ordering/booking</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Admin panel</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> Logo & brand kit</div>
-          <div class="p-feature"><span class="pf-dot">✦</span> 60 days support</div>
-        </div>
-        <a href="#contact" class="p-cta">Get Started</a>
-      </div>
+    <div class="pcard hot">
+      <div class="pc-bar">&#9889; Most Popular</div>
+      <div class="pc-head"><div class="pc-name">Business</div><div class="pc-amount"><sup>$</sup>45</div><div class="pc-del">3 day delivery &middot; One-time</div></div>
+      <div class="pc-div"></div>
+      <div class="pc-feats"><div class="pc-feat"><div class="pc-ck">&#10003;</div> Up to 5 pages</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Booking integration</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Photo gallery</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> SEO optimised</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Unlimited revisions</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> 30 days support</div></div>
+      <a href="https://www.fiverr.com/youwinworld" target="_blank" class="pc-cta">Order Now &#8594;</a>
+    </div>
+    <div class="pcard">
+      <div class="pc-head"><div class="pc-name">App + Brand</div><div class="pc-amount"><sup>$</sup>99</div><div class="pc-del">5 day delivery &middot; One-time</div></div>
+      <div class="pc-div"></div>
+      <div class="pc-feats"><div class="pc-feat"><div class="pc-ck">&#10003;</div> Full web app</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Online ordering/booking</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Admin panel</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> Logo &amp; brand kit</div><div class="pc-feat"><div class="pc-ck">&#10003;</div> 60 days support</div></div>
+      <a href="https://www.fiverr.com/youwinworld" target="_blank" class="pc-cta">Order Now &#8594;</a>
     </div>
   </div>
 </section>
-
-<!-- CONTACT -->
+<section class="testi" id="reviews">
+  <div class="t-hd reveal"><h2 class="t-title">What clients<br><em>say about us</em></h2></div>
+  <div class="t-grid reveal">
+    <div class="tc"><div class="tc-stars"><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span></div><p class="tc-txt">"Our bookings went up 40% the month after launch. Paurav built exactly what I envisioned &mdash; delivered ahead of time and looked better than I ever expected."</p><div class="tc-auth"><div class="tc-av ta1">M</div><div><div class="tc-name">Marco Rossi</div><div class="tc-role">Bella Cucina Restaurant</div></div></div></div>
+    <div class="tc"><div class="tc-stars"><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span></div><p class="tc-txt">"Honestly shocked at the quality for the price. My clients keep asking who made my website. Professional, fast, and genuinely cares about the result."</p><div class="tc-auth"><div class="tc-av ta2">S</div><div><div class="tc-name">Sarah Mitchell</div><div class="tc-role">Bloom &amp; Co Salon</div></div></div></div>
+    <div class="tc"><div class="tc-stars"><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span><span class="tc-star">&#9733;</span></div><p class="tc-txt">"No jargon, no drama. He just delivered. I&apos;ve recommended Paurav to three other business owners &mdash; the best investment I made this year."</p><div class="tc-auth"><div class="tc-av ta3">J</div><div><div class="tc-name">James Okoro</div><div class="tc-role">FitCore Gym</div></div></div></div>
+  </div>
+</section>
 <section class="contact" id="contact">
-  <div class="contact-inner reveal">
-    <p class="section-label">Get In Touch</p>
-    <h2 class="contact-title">Let's build something <em>remarkable.</em></h2>
-        <p class="contact-sub">Ready to get started? Reach out directly — I reply within a few hours and we can get your project moving fast.</p>
-    <div class="contact-btns">
-      <a href="https://www.fiverr.com/youwinworld" target="_blank" class="contact-btn-main">
-        <span class="cb-icon">💼</span>
-        <div><div class="cb-label">Order on Fiverr</div><div class="cb-sub">@youwinworld — Fast &amp; Secure</div></div>
-        <span class="cb-arr">→</span>
-      </a>
-      <a href="mailto:paurav@lancydigital.com" class="contact-btn-sec">
-        <span class="cb-icon">✉️</span>
-        <div><div class="cb-label">Send an Email</div><div class="cb-sub">paurav@lancydigital.com</div></div>
-        <span class="cb-arr">→</span>
-      </a>
-      <a href="https://wa.me/447469293717" target="_blank" class="contact-btn-sec">
-        <span class="cb-icon">💬</span>
-        <div><div class="cb-label">WhatsApp Me</div><div class="cb-sub">Quick chat, fast quotes</div></div>
-        <span class="cb-arr">→</span>
-      </a>
+  <div class="ct-bg"></div>
+  <div class="ct-in reveal">
+    <div class="ct-tag">&#10022; Get In Touch</div>
+    <h2 class="ct-title">Let&apos;s build<br>something <em>great.</em></h2>
+    <p class="ct-sub">Ready to get your business online? Reach out directly &mdash; I reply fast and we can start straight away.</p>
+    <div class="ct-opts">
+      <a href="https://www.fiverr.com/youwinworld" target="_blank" class="co co-main"><div class="co-ic">&#128188;</div><div class="co-txt"><div class="co-lbl">Order on Fiverr</div><div class="co-sub">@youwinworld &mdash; Secure &amp; Fast</div></div><div class="co-arr">&#8594;</div></a>
+      <a href="https://wa.me/447469293717" target="_blank" class="co co-sec"><div class="co-ic">&#128172;</div><div class="co-txt"><div class="co-lbl">WhatsApp Me</div><div class="co-sub">+44 7469 293717 &mdash; Quick chat &amp; quotes</div></div><div class="co-arr">&#8594;</div></a>
+      <a href="mailto:paurav@lancydigital.com" class="co co-sec"><div class="co-ic">&#9993;&#65039;</div><div class="co-txt"><div class="co-lbl">Send an Email</div><div class="co-sub">paurav@lancydigital.com</div></div><div class="co-arr">&#8594;</div></a>
     </div>
   </div>
 </section>
-
-<!-- FOOTER -->
 <footer>
-  <div class="f-logo">Paurav Joshi <span>·</span> Lancy Digital</div>
-  <div class="f-links">
-    <a href="#about">About</a>
-    <a href="#work">Work</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#contact">Contact</a>
-  </div>
-  <div class="f-copy">© 2025 Lancy Digital</div>
+  <div class="f-logo">LANCY<span>.</span>DIGITAL</div>
+  <div class="f-links"><a href="#about" class="f-a">About</a><a href="#work" class="f-a">Work</a><a href="#pricing" class="f-a">Pricing</a><a href="#contact" class="f-a">Contact</a></div>
+  <div class="f-copy">&copy; 2025 Lancy Digital</div>
 </footer>
-
 <script>
-// LOADER
-const fill = document.getElementById('loaderFill');
-const pct = document.getElementById('loaderPct');
-const loader = document.getElementById('loader');
-let p = 0;
-const iv = setInterval(() => {
-  p += Math.random() * 18;
-  if(p >= 100){ p = 100; clearInterval(iv); setTimeout(()=>{ loader.classList.add('hide'); }, 400); }
-  fill.style.width = p + '%';
-  pct.textContent = Math.floor(p) + '%';
-}, 80);
-
-// CURSOR
-const cur = document.getElementById('cur');
-const ring = document.getElementById('cur-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
-(function anim(){
-  cur.style.left=mx+'px'; cur.style.top=my+'px';
-  rx+=(mx-rx)*0.1; ry+=(my-ry)*0.1;
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
-  requestAnimationFrame(anim);
-})();
-document.querySelectorAll('a,button,.svc,.proj,.tool-card,.t-card,.p-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>ring.classList.add('big'));
-  el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
-});
-
-// NAV SCROLL
-const nav = document.getElementById('nav');
-window.addEventListener('scroll',()=>{ nav.classList.toggle('sticky',scrollY>80); });
-
-// REVEAL ON SCROLL
-const revs = document.querySelectorAll('.reveal');
-const obs = new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{
-    if(e.isIntersecting){
-      setTimeout(()=>e.target.classList.add('on'), i*80);
-      obs.unobserve(e.target);
-    }
-  });
-},{threshold:0.1});
-revs.forEach(r=>obs.observe(r));
-
-// SKILL BARS
-const skillObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.querySelectorAll('.skill-fill').forEach(b=>{
-        b.style.width = b.dataset.w + '%';
-      });
-      skillObs.unobserve(e.target);
-    }
-  });
-},{threshold:0.3});
-document.querySelectorAll('.about-right').forEach(el=>skillObs.observe(el));
-
-// COUNTER ANIMATION
-function animCount(el, target, suffix=''){
-  let cur=0; const step = target/60;
-  const iv = setInterval(()=>{
-    cur+=step;
-    if(cur>=target){ cur=target; clearInterval(iv); }
-    el.querySelector('.n').innerHTML = Math.floor(cur) + '<span>' + suffix + '</span>';
-  }, 25);
-}
-const numObs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const nums = e.target.querySelectorAll('.about-num');
-      const data = [{v:40,s:'+'},{v:5,s:'★'},{v:48,s:'h'},{v:3,s:'+'}];
-      nums.forEach((n,i)=>animCount(n,data[i].v,data[i].s));
-      numObs.unobserve(e.target);
-    }
-  });
-},{threshold:0.5});
-document.querySelectorAll('.about-nums').forEach(el=>numObs.observe(el));
+const lf=document.getElementById('lf'),lpct=document.getElementById('lpct'),loader=document.getElementById('loader');
+let p=0;const iv=setInterval(()=>{p+=Math.random()*14+4;if(p>=100){p=100;clearInterval(iv);setTimeout(()=>loader.classList.add('hide'),500);}lf.style.width=p+'%';lpct.textContent=Math.floor(p)+'%';},55);
+const cur=document.getElementById('cur');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';});
+document.querySelectorAll('a,button,.svc,.proj,.tc,.pcard,.abox,.step').forEach(el=>{el.addEventListener('mouseenter',()=>cur.classList.add('h'));el.addEventListener('mouseleave',()=>cur.classList.remove('h'));});
+const ro=new IntersectionObserver(entries=>{entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('on'),i*90);ro.unobserve(e.target);}});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(r=>ro.observe(r));
 </script>
 </body>
 </html>
